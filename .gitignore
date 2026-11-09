@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+.env
+
+# Generated outputs
+*_pose.jpg
+*_pose.mp4
+output/
+*.json
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store

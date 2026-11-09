@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="Browser-based real-time human pose estimation using MediaPipe Pose Landmarker.">
+  <title>Human Pose Estimation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">✣</div>
+      <div>
+        <p class="eyebrow">COMPUTER VISION PROJECT</p>
+        <h1>Human Pose Estimation</h1>
+      </div>
+      <span class="status" id="status">Not started</span>
+    </header>
+
+    <section class="intro">
+      <p>Detect body landmarks, visualize the connected skeleton, and measure joint angles in your browser.</p>
+    </section>
+
+    <section class="workspace">
+      <div class="viewer">
+        <div class="viewer-head">
+          <h2>Live camera</h2>
+          <span id="fps">—</span>
+        </div>
+        <div class="stage" id="stage">
+          <video id="video" playsinline muted></video>
+          <img id="imagePreview" alt="Selected image preview" hidden>
+          <canvas id="overlay"></canvas>
+          <div class="placeholder" id="placeholder">
+            <span class="camera-icon">◎</span>
+            <strong>Camera preview</strong>
+            <small>Start the camera to begin pose detection.</small>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="primary" id="startBtn">Start camera</button>
+          <button class="secondary" id="stopBtn" disabled>Stop</button>
+          <label class="upload secondary">
+            Analyze image
+            <input id="imageInput" type="file" accept="image/*">
+          </label>
+        </div>
+        <p class="hint" id="message" role="status">Allow camera access when your browser asks. Camera access requires HTTPS or localhost.</p>
+      </div>
+
+      <aside class="metrics">
+        <div class="metrics-head">
+          <h2>Joint angles</h2>
+          <span class="live-dot"></span>
+        </div>
+        <p class="muted">Estimated angles in degrees</p>
+        <div class="angle-grid" id="angles">
+          <div class="angle"><span>Left elbow</span><strong>—</strong></div>
+          <div class="angle"><span>Right elbow</span><strong>—</strong></div>
+          <div class="angle"><span>Left shoulder</span><strong>—</strong></div>
+          <div class="angle"><span>Right shoulder</span><strong>—</strong></div>
+          <div class="angle"><span>Left hip</span><strong>—</strong></div>
+          <div class="angle"><span>Right hip</span><strong>—</strong></div>
+          <div class="angle"><span>Left knee</span><strong>—</strong></div>
+          <div class="angle"><span>Right knee</span><strong>—</strong></div>
+        </div>
+        <div class="landmark-card">
+          <span class="muted">Detected landmarks</span>
+          <strong id="landmarkCount">0 / 33</strong>
+        </div>
+        <div class="privacy-note">
+          <strong>Privacy note</strong>
+          <p>Camera frames are processed in your browser and are not uploaded by this application.</p>
+        </div>
+      </aside>
+    </section>
+    <footer>Built with MediaPipe Tasks Vision · Hosted on Vercel</footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

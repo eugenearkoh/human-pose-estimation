@@ -1,175 +1,62 @@
 # Human Pose Estimation
 
-A Python computer-vision project that detects human body landmarks from images, video files, or a live webcam feed using **MediaPipe Pose** and **OpenCV**. It draws a connected human skeleton, tracks landmarks across video frames, calculates selected joint angles, and can export landmark coordinates and angle measurements to JSON.
+A browser-based human pose estimation demo, deployable as a static site on **Vercel**. It uses MediaPipe Pose Landmarker (Tasks Vision) to detect body landmarks from a live camera or uploaded image, draw a connected skeleton, and calculate selected joint angles.
 
-## Features
+The original Python/OpenCV implementation is retained in `app.py` and `src/` for command-line image/video processing. The Vercel-hosted browser experience is served from the repository root.
 
-- Detects 33 MediaPipe body landmarks.
-- Highlights shoulders, elbows, wrists, hips, knees, and other pose landmarks.
-- Draws the connected human skeleton over the original image or video.
-- Calculates left/right shoulder, elbow, hip, and knee angles.
-- Processes still images, recorded videos, and a live webcam.
-- Exports normalized landmark coordinates (`x`, `y`, `z`, visibility) and joint angles to JSON.
-- Configurable detection confidence, tracking confidence, and model complexity.
+## Browser features
 
-## Requirements
+- Live camera pose tracking (33 MediaPipe landmarks).
+- Connected skeleton overlay.
+- Estimated left/right elbow, shoulder, hip, and knee angles.
+- Single-image analysis.
+- Browser-local processing: camera frames are not uploaded by this app.
 
-- Python 3.10 or 3.11 (recommended)
-- A webcam for live-camera mode
-- Windows, macOS, or Linux
+## Deploy to Vercel from GitHub
 
-## Installation
+1. Push this repository to GitHub.
+2. Sign in to Vercel and choose **Add New → Project**.
+3. Import the `human-pose-estimation` GitHub repository.
+4. Set **Framework Preset** to `Other`.
+5. Leave **Root Directory** as `./`.
+6. Leave Build Command and Output Directory blank (static site).
+7. Deploy.
 
-Clone the repository:
+Vercel will redeploy automatically when you push changes to the connected GitHub branch.
 
-```bash
-git clone https://github.com/YOUR-USERNAME/human-pose-estimation.git
-cd human-pose-estimation
-```
+## Run locally
 
-Create and activate a virtual environment.
-
-**Windows (PowerShell):**
-```powershell
-py -3.10 -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-**macOS / Linux:**
-```bash
-python3.10 -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies:
+The web app must be served over HTTP/HTTPS; opening `index.html` directly as a file may prevent camera access.
 
 ```bash
-python -m pip install --upgrade pip
+npx serve .
+```
+
+Open the local URL printed by the server. Camera access requires HTTPS or localhost and browser permission.
+
+## Python implementation
+
+The Python version remains available for local processing:
+
+```bash
+python -m venv .venv
+# Activate the environment, then:
 pip install -r requirements.txt
-```
-
-## Usage
-
-### 1. Process an image
-
-```bash
-python app.py --image path/to/photo.jpg
-```
-
-The annotated image is saved beside the input as `photo_pose.jpg`.
-
-To choose an output path and export landmark data:
-
-```bash
-python app.py --image path/to/photo.jpg --output output/annotated.jpg --json output/pose_data.json
-```
-
-### 2. Process a video
-
-```bash
-python app.py --video path/to/video.mp4
-```
-
-The annotated video is saved as `video_pose.mp4`.
-
-To export pose data:
-
-```bash
-python app.py --video path/to/video.mp4 --output output/annotated.mp4 --json output/pose_data.json
-```
-
-### 3. Use a live webcam
-
-```bash
 python app.py --webcam
 ```
 
-A live window opens. Press **Q** to stop.
-
-To save the webcam session as a video and export the detected pose data:
+Image and video examples:
 
 ```bash
-python app.py --webcam --output output/webcam_pose.mp4 --json output/webcam_pose.json
-```
-
-### 4. Adjust detection settings
-
-```bash
-python app.py --video path/to/video.mp4 --model-complexity 2 --detection-confidence 0.6 --tracking-confidence 0.6
-```
-
-Model complexity options are `0` (fastest), `1` (balanced), and `2` (most accurate).
-
-## Output data
-
-The optional JSON export contains one record per detected image or video frame. Each record includes normalized landmark coordinates and visibility scores, plus joint angles in degrees. Video records also include the frame number. Frames without a detected person are omitted from the JSON export.
-
-Example structure:
-
-```json
-[
-  {
-    "frame": 0,
-    "landmarks": {
-      "LEFT_SHOULDER": {
-        "x": 0.42,
-        "y": 0.25,
-        "z": -0.08,
-        "visibility": 0.99
-      }
-    },
-    "joint_angles_degrees": {
-      "left_elbow": 95.4,
-      "right_elbow": 91.2,
-      "left_shoulder": 42.1,
-      "right_shoulder": 40.8,
-      "left_hip": 170.3,
-      "right_hip": 168.7,
-      "left_knee": 175.0,
-      "right_knee": 174.2
-    }
-  }
-]
-```
-
-Values above are illustrative. Actual output depends on the input and detected pose.
-
-## Run tests
-
-The angle-calculation unit tests do not require a webcam:
-
-```bash
+python app.py --image path/to/photo.jpg
+python app.py --video path/to/video.mp4 --json output/pose.json
 python -m unittest discover -s tests -v
 ```
 
-## Project structure
+## Important notes
 
-```text
-human-pose-estimation/
-├── app.py
-├── requirements.txt
-├── README.md
-├── .gitignore
-├── src/
-│   ├── __init__.py
-│   └── pose_estimator.py
-└── tests/
-    └── test_angles.py
-```
-
-## Troubleshooting
-
-- **No person detected:** use a clear, well-lit image/video and keep the person reasonably visible in the frame.
-- **Webcam unavailable:** close other applications using the camera and check operating-system camera permissions.
-- **Installation issues:** use Python 3.10 or 3.11 in a fresh virtual environment, then reinstall `requirements.txt`.
-- **Video playback compatibility:** the output uses the MP4V codec. If your player cannot open it, try another media player or convert the output with FFmpeg.
-
-## Technology
-
-- [MediaPipe Pose](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker)
-- [OpenCV](https://opencv.org/)
-- [NumPy](https://numpy.org/)
-
-## Notes
-
-This project is intended for learning and demonstration. Pose landmarks and calculated angles are estimates and should not be treated as clinical measurements.
+- The browser version downloads the MediaPipe JavaScript runtime, WebAssembly files, and pose model from public CDNs at runtime; an internet connection is required.
+- Camera access requires HTTPS (Vercel provides HTTPS) and explicit browser permission.
+- GPU delegate support varies by device/browser. If a device reports a GPU initialization error, change `delegate: "GPU"` to `delegate: "CPU"` in `app.js`.
+- Pose landmarks and angles are estimates, not clinical measurements.
+- The Python/OpenCV webcam and video-processing features run locally; Vercel static hosting does not run that persistent camera-processing loop on the server.
